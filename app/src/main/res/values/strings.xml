@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Tutorial 3 App Lifecycle</string>
+    <string name="start_timer">START TIMER</string>
+    <string name="dial_number">DIAL NUMBER</string>
+    <string name="open_browser">OPEN BROWSER</string>
+    <string name="show_map">SHOW MAP</string>
+    <string name="hint_digits_only">digits only</string>
+</resources>
