@@ -11,5 +11,7 @@
         android:id="@+id/timerTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="24dp"
         />
 </android.support.constraint.ConstraintLayout>

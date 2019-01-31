@@ -3,6 +3,7 @@ package com.bodovix.tutorial3applifecycle;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -16,11 +17,18 @@ public class TimerActivity extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
 
+    Handler handlerFinish;
+    Runnable runnableFinish;
+
+    boolean colour;
+
+    ConstraintLayout backgroundLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
         timerTV = findViewById(R.id.timerTextView);
+        backgroundLayout = findViewById(R.id.timerActivityConstLayout);
 
         //get extras from intent source
         Intent i = getIntent();
@@ -39,8 +47,39 @@ public class TimerActivity extends AppCompatActivity {
             }
         };
 
+        handlerFinish = new Handler()
+        {
+            public void handleMessage (Message msg) {
+                if (msg.getData().getBoolean("colour")) {
+                    backgroundLayout.setBackgroundColor(getResources().getColor(R.color.red));
+                } else {
+                    backgroundLayout.setBackgroundColor(getResources().getColor(R.color.green));
+                }
+            }
+        };
+
+        runnableFinish = new Runnable() {
+            @Override
+            public void run() {
+                calculateChangeBackGroundColour();
+            }
+        };
+
+
         //start timer thread
         handler.postDelayed(runnable,1000);
+    }
+
+    private void calculateChangeBackGroundColour() {
+        //change colour flag
+        colour = !colour;
+        //build the data to be sent to the Runnable
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("colour", colour);
+        message.setData(bundle);
+        handlerFinish.sendMessage(message);
+        handlerFinish.postDelayed(runnableFinish,500);
     }
 
     private void updateTime() {
@@ -58,7 +97,14 @@ public class TimerActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("Time", timeString);
         message.setData(bundle);
-        if (secondsLeft < 0 && minutesLeft < 0){
+
+        if (secondsLeft <= 0 && minutesLeft == 0){
+            Message messageFinish = new Message();
+            Bundle bundleFinish = new Bundle();
+            bundleFinish.putBoolean("colour", true);
+            messageFinish.setData(bundleFinish);
+            handlerFinish.sendMessage(messageFinish);
+            handler.postDelayed(runnableFinish,500);
             return;
         }
         handler.sendMessage(message);
