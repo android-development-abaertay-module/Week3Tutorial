@@ -58,6 +58,9 @@ public class TimerActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("Time", timeString);
         message.setData(bundle);
+        if (secondsLeft < 0 && minutesLeft < 0){
+            return;
+        }
         handler.sendMessage(message);
         handler.postDelayed(runnable, 1000);
     }
